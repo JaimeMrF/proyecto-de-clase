@@ -3,7 +3,10 @@
 @section('title', 'Agregar Producto — MiTienda')
 
 @section('content')
+        <header>
+
     @include("layouts.navbar")
+    </header>
     {{-- Breadcrumb --}}
     <div class="breadcrumb">
         <a href="/">Inicio</a>
@@ -342,7 +345,9 @@
         </aside>
 
     </div>
-
+        <footer>
+        @include("layouts.footer")
+    </footer>
     <script>
         /* Char counter */
         function updateCharCount(el, spanId, max) {
