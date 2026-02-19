@@ -3,7 +3,7 @@
 @section('title', 'Productos — MiTienda')
 
 @section('content')
-
+    @include("layouts.navbar")
     {{-- Breadcrumb --}}
     <div class="breadcrumb">
         <a href="/">Inicio</a>
@@ -157,5 +157,7 @@
         @endfor
         <a href="#" class="page-btn">Siguiente →</a>
     </div>
+
+    @include("layouts.footer")
 
 @endsection
