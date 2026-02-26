@@ -6,6 +6,8 @@
     <title>@yield('title', 'MiTienda') — Todo lo que necesitas</title>
     <link href="https://fonts.googleapis.com/css2?family=Amazon+Ember:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @stack('styles')
+
 </head>
 <body>
 
