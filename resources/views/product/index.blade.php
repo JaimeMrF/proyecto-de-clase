@@ -4,501 +4,525 @@
 
 @push('styles')
 <style>
-    /* ── Breadcrumb ── */
-    .breadcrumb {
-        font-size: 13px;
-        color: var(--amazon-muted);
-        margin-bottom: 16px;
+    /* ── Banner ── */
+    .promo-strip {
+        background: var(--ink);
+        color: var(--white);
+        padding: 14px 28px;
+        margin-bottom: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
     }
-    .breadcrumb a { color: var(--amazon-link); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--amazon-blue-hover); text-decoration: underline; }
-    .breadcrumb span { margin: 0 5px; color: #999; }
+    .promo-strip-text {
+        font-family: var(--font-serif);
+        font-size: 17px;
+        font-style: italic;
+    }
+    .promo-strip-text strong {
+        font-style: normal;
+        font-family: var(--font-sans);
+        font-weight: 600;
+        color: #f0c040;
+        font-size: 13px;
+        margin-right: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .promo-strip-cta {
+        background: var(--white);
+        color: var(--ink);
+        text-decoration: none;
+        padding: 7px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        flex-shrink: 0;
+        transition: background .12s, color .12s;
+        white-space: nowrap;
+    }
+    .promo-strip-cta:hover { background: #f0c040; }
 
     /* ── Toolbar ── */
     .products-toolbar {
         display: flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--rule);
+        gap: 16px;
         flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 18px;
     }
-    .products-toolbar h1 {
+    .toolbar-left h1 {
+        font-family: var(--font-serif);
         font-size: 22px;
         font-weight: 400;
-        color: var(--amazon-text);
+        color: var(--ink);
+        font-style: italic;
     }
-    .toolbar-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+    .toolbar-left h1 span {
+        font-style: normal;
+        font-family: var(--font-sans);
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--ink-muted);
+        margin-left: 10px;
     }
-    .sort-label { font-size: 13px; color: var(--amazon-muted); }
+    .toolbar-right { display: flex; align-items: center; gap: 14px; }
+    .sort-label { font-size: 13px; color: var(--ink-muted); }
     .sort-select {
         padding: 6px 10px;
-        border: 1px solid var(--amazon-border);
-        border-radius: 4px;
+        background: var(--white);
+        border: 1.5px solid var(--rule-dark);
+        color: var(--ink);
         font-size: 13px;
-        background: #fff;
+        font-family: var(--font-sans);
+        outline: none;
         cursor: pointer;
+        transition: border-color .12s;
+        border-radius: 2px;
     }
-    .btn-add {
-        background: var(--amazon-orange-btn);
-        border: 1px solid #a88734;
-        border-radius: 4px;
-        padding: 8px 18px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
+    .sort-select:focus { border-color: var(--ink); }
+    .btn-add-product {
+        background: var(--accent);
+        color: var(--white);
         text-decoration: none;
-        color: var(--amazon-text);
-        transition: background .15s, box-shadow .15s;
+        padding: 8px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: background .12s;
         white-space: nowrap;
+        letter-spacing: 0.01em;
     }
-    .btn-add:hover {
-        background: #e68a00;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    }
+    .btn-add-product:hover { background: var(--accent-dark); }
 
     /* ── Layout ── */
     .products-layout {
         display: flex;
-        gap: 20px;
+        gap: 32px;
         align-items: flex-start;
     }
 
-    /* ── Sidebar filtros ── */
+    /* ── Sidebar ── */
     .sidebar {
-        width: 220px;
+        width: 196px;
         flex-shrink: 0;
     }
-    .filter-card {
-        background: #fff;
-        border: 1px solid var(--amazon-border);
-        border-radius: 4px;
-        padding: 16px;
-        margin-bottom: 14px;
-    }
-    .filter-card h3 {
-        font-size: 15px;
-        font-weight: 700;
+    .filter-section { margin-bottom: 28px; }
+    .filter-section-title {
+        font-size: 11px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-muted);
         margin-bottom: 12px;
         padding-bottom: 8px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--rule);
     }
     .filter-item {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 9px;
         margin-bottom: 8px;
-        font-size: 13px;
+        font-size: 13.5px;
+        color: var(--ink-secondary);
         cursor: pointer;
+        transition: color .12s;
+        user-select: none;
     }
-    .filter-item:hover { color: var(--amazon-blue-hover); }
-    .filter-item input[type="checkbox"] { accent-color: var(--amazon-orange-btn); }
-    .price-range {
+    .filter-item:hover { color: var(--ink); }
+    .filter-item input { accent-color: var(--accent); cursor: pointer; }
+    .filter-count {
+        margin-left: auto;
+        font-size: 11px;
+        font-family: var(--font-mono);
+        color: var(--ink-faint);
+    }
+
+    .price-inputs {
         display: flex;
-        flex-direction: column;
-        gap: 8px;
+        gap: 6px;
+        align-items: center;
+        margin-top: 10px;
     }
-    .price-range label { font-size: 12px; color: var(--amazon-muted); }
-    .price-range input[type="range"] {
-        width: 100%;
-        accent-color: var(--amazon-orange-btn);
+    .price-input {
+        width: 70px;
+        border: 1.5px solid var(--rule-dark);
+        padding: 5px 8px;
+        font-size: 13px;
+        font-family: var(--font-mono);
+        color: var(--ink);
+        outline: none;
+        transition: border-color .12s;
+        background: var(--white);
     }
-    .price-range-vals {
-        display: flex;
-        justify-content: space-between;
-        font-size: 12px;
-        color: var(--amazon-muted);
-    }
-    .stars-filter { display: flex; flex-direction: column; gap: 6px; }
+    .price-input:focus { border-color: var(--ink); }
+    .price-dash { color: var(--ink-muted); font-size: 12px; }
+
+    .stars-filter { display: flex; flex-direction: column; gap: 7px; }
     .star-row {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 7px;
         font-size: 13px;
-        cursor: pointer;
         text-decoration: none;
-        color: var(--amazon-text);
+        color: var(--ink-secondary);
+        transition: color .12s;
     }
-    .star-row:hover { color: var(--amazon-blue-hover); }
-    .stars { color: var(--amazon-star); font-size: 14px; letter-spacing: -1px; }
+    .star-row:hover { color: var(--ink); }
+    .stars { color: #c8880a; letter-spacing: 1px; font-size: 13px; }
 
-    /* ── Grid productos ── */
+    /* ── Products grid ── */
     .products-grid {
         flex: 1;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
+        gap: 1px;
+        background: var(--rule);
+        border: 1px solid var(--rule);
     }
 
     .product-card {
-        background: #fff;
-        border: 1px solid var(--amazon-border);
-        border-radius: 4px;
-        padding: 14px;
+        background: var(--white);
+        padding: 20px 16px 16px;
         display: flex;
         flex-direction: column;
-        transition: box-shadow .2s;
         cursor: pointer;
         position: relative;
-        overflow: hidden;
+        transition: background .12s;
     }
-    .product-card:hover {
-        box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-        z-index: 1;
-    }
+    .product-card:hover { background: var(--paper); }
 
     .product-badge {
         position: absolute;
-        top: 10px;
-        left: 10px;
-        background: var(--amazon-red);
-        color: #fff;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 2px 7px;
-        border-radius: 2px;
+        top: 0; left: 0;
+        background: var(--accent);
+        color: var(--white);
+        font-size: 10px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        padding: 3px 8px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
     }
-    .badge-new { background: #067d62; }
+    .badge-new { background: var(--green); }
 
     .product-img-wrap {
         width: 100%;
-        padding-top: 100%;
+        padding-top: 90%;
         position: relative;
-        margin-bottom: 12px;
-        background: #f6f6f6;
-        border-radius: 3px;
+        margin-bottom: 14px;
+        background: var(--off-white);
         overflow: hidden;
     }
     .product-img-placeholder {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        inset: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 52px;
-        color: #ccc;
+        color: var(--rule-dark);
     }
+    /* Placeholder icon style */
     .product-img-placeholder svg {
-        width: 64px; height: 64px; opacity: .3;
+        width: 48px; height: 48px;
+        stroke: var(--ink-faint);
+        fill: none;
     }
 
     .product-title {
         font-size: 13px;
-        color: var(--amazon-text);
-        margin-bottom: 6px;
+        line-height: 1.5;
+        color: var(--blue);
+        margin-bottom: 7px;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        line-height: 1.4;
         flex: 1;
+        text-decoration: none;
+        transition: text-decoration .12s;
     }
-    .product-title:hover { color: var(--amazon-blue-hover); }
+    .product-card:hover .product-title { text-decoration: underline; }
 
     .product-stars {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
         margin-bottom: 4px;
     }
-    .product-stars .stars { font-size: 13px; }
-    .product-stars .rating-count {
-        font-size: 12px;
-        color: var(--amazon-link);
-    }
+    .product-stars .stars { font-size: 12px; }
+    .rating-count { font-size: 12px; color: var(--blue); }
 
     .product-prime {
-        font-size: 11px;
-        font-weight: 700;
-        color: #007eb9;
-        margin-bottom: 4px;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: #1a5276;
+        margin-bottom: 7px;
         display: flex;
         align-items: center;
-        gap: 3px;
+        gap: 5px;
+    }
+    .prime-tag {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 600;
+        background: #1a5276;
+        color: white;
+        padding: 1px 5px;
+        letter-spacing: 0.05em;
     }
 
-    .product-price-block { margin-bottom: 10px; }
+    .product-price-block { margin-bottom: 12px; }
     .product-price-old {
         font-size: 12px;
-        color: var(--amazon-muted);
+        color: var(--ink-muted);
         text-decoration: line-through;
-        margin-bottom: 1px;
+        font-family: var(--font-mono);
+        margin-bottom: 2px;
     }
     .product-price {
-        font-size: 18px;
+        font-family: var(--font-serif);
+        font-size: 21px;
         font-weight: 700;
-        color: var(--amazon-text);
+        color: var(--ink);
+        line-height: 1;
     }
-    .product-price sup { font-size: 12px; vertical-align: super; font-weight: 400; }
-    .product-price-discount {
+    .product-price sup {
+        font-size: 13px;
+        vertical-align: super;
+        font-family: var(--font-sans);
+        font-weight: 400;
+    }
+    .product-discount {
         font-size: 12px;
-        color: var(--amazon-red);
+        color: var(--accent);
+        font-family: var(--font-mono);
+        margin-top: 3px;
         font-weight: 500;
     }
 
     .btn-cart {
-        background: var(--amazon-orange-btn);
-        border: 1px solid #a88734;
-        border-radius: 20px;
-        padding: 7px;
-        font-size: 13px;
-        cursor: pointer;
-        text-align: center;
         width: 100%;
-        margin-top: auto;
-        transition: background .15s;
+        background: var(--off-white);
+        border: 1.5px solid var(--rule-dark);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-size: 13px;
         font-weight: 500;
+        padding: 9px;
+        cursor: pointer;
+        transition: background .12s, border-color .12s, color .12s;
+        margin-top: auto;
+        letter-spacing: 0.01em;
     }
-    .btn-cart:hover { background: #e68a00; }
+    .btn-cart:hover {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--white);
+    }
 
-    /* ── Banner ── */
-    .hero-banner {
-        background: linear-gradient(135deg, #232f3e 0%, #37475a 60%, #131921 100%);
-        border-radius: 6px;
-        padding: 32px 40px;
-        margin-bottom: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        overflow: hidden;
-        position: relative;
-        color: #fff;
-    }
-    .hero-banner::before {
-        content: '';
-        position: absolute;
-        right: -40px; top: -40px;
-        width: 250px; height: 250px;
-        background: radial-gradient(circle, rgba(254,189,105,.15) 0%, transparent 70%);
-    }
-    .hero-text h2 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
-    .hero-text p { font-size: 15px; color: #ccc; margin-bottom: 18px; }
-    .hero-text a {
-        display: inline-block;
-        background: var(--amazon-orange-btn);
-        color: #111;
-        text-decoration: none;
-        padding: 10px 24px;
-        border-radius: 4px;
-        font-weight: 700;
-        font-size: 14px;
-        transition: background .15s;
-    }
-    .hero-text a:hover { background: #e68a00; }
-    .hero-icon { font-size: 90px; opacity: .6; }
-
-    /* ── Paginación ── */
+    /* ── Pagination ── */
     .pagination-wrap {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 4px;
-        margin-top: 28px;
+        gap: 2px;
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--rule);
     }
     .page-btn {
-        padding: 7px 14px;
-        border: 1px solid var(--amazon-border);
-        border-radius: 4px;
-        background: #fff;
+        padding: 7px 13px;
+        border: 1.5px solid var(--rule-dark);
+        background: var(--white);
         font-size: 13px;
+        font-family: var(--font-mono);
         cursor: pointer;
-        color: var(--amazon-link);
-        transition: background .12s;
+        color: var(--ink-secondary);
         text-decoration: none;
+        transition: all .12s;
     }
-    .page-btn:hover { background: #f0f0f0; }
+    .page-btn:hover { border-color: var(--ink); color: var(--ink); background: var(--off-white); }
     .page-btn.active {
-        background: var(--amazon-orange-btn);
-        border-color: #a88734;
-        color: #111;
-        font-weight: 700;
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--white);
     }
+    .page-btn.nav { font-family: var(--font-sans); font-size: 13px; }
 
     /* ── Empty state ── */
     .empty-state {
-        grid-column: 1 / -1;
+        grid-column: 1/-1;
+        padding: 80px 24px;
         text-align: center;
-        padding: 60px 20px;
-        color: var(--amazon-muted);
     }
-    .empty-state .empty-icon { font-size: 64px; margin-bottom: 16px; }
-    .empty-state h3 { font-size: 20px; color: var(--amazon-text); margin-bottom: 8px; }
-    .empty-state p { font-size: 14px; margin-bottom: 20px; }
+    .empty-state h3 {
+        font-family: var(--font-serif);
+        font-size: 22px;
+        font-style: italic;
+        color: var(--ink);
+        margin-bottom: 10px;
+    }
+    .empty-state p { font-size: 14px; color: var(--ink-muted); margin-bottom: 24px; }
 
-    @media (max-width: 1024px) {
-        .products-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 768px) {
-        .sidebar { display: none; }
-        .products-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 480px) {
-        .products-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 860px) { .sidebar { display: none; } .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .products-grid { grid-template-columns: 1fr; } .promo-strip { flex-direction: column; text-align: center; } }
 </style>
 @endpush
 
 @section('content')
 
-    {{-- Breadcrumb --}}
-    <div class="breadcrumb">
-        <a href="/">Inicio</a>
-        <span>›</span>
-        <strong>Todos los Productos</strong>
-    </div>
+<div class="breadcrumb">
+    <a href="/">Inicio</a>
+    <span>/</span>
+    <strong>Todos los productos</strong>
+</div>
 
-    {{-- Hero Banner --}}
-    <div class="hero-banner">
-        <div class="hero-text">
-            <h2>🔥 Ofertas de la Semana</h2>
-            <p>Hasta 60% de descuento en miles de productos seleccionados.</p>
-            <a href="#">Ver Ofertas</a>
+{{-- Promo strip --}}
+<div class="promo-strip">
+    <div class="promo-strip-text">
+        <strong>Semana de Ofertas</strong>
+        Hasta 60% de descuento en miles de productos seleccionados.
+    </div>
+    <a href="#" class="promo-strip-cta">Ver Ofertas</a>
+</div>
+
+{{-- Toolbar --}}
+<div class="products-toolbar">
+    <div class="toolbar-left">
+        <h1>Resultados <span>1–{{ count($misProductos) }} de {{ count($misProductos) }}</span></h1>
+    </div>
+    <div class="toolbar-right">
+        <span class="sort-label">Ordenar por</span>
+        <select class="sort-select">
+            <option>Relevancia</option>
+            <option>Precio: menor a mayor</option>
+            <option>Precio: mayor a menor</option>
+            <option>Mejor valorados</option>
+            <option>Más recientes</option>
+        </select>
+        <a href="/product/create" class="btn-add-product">+ Agregar producto</a>
+    </div>
+</div>
+
+<div class="products-layout">
+
+    {{-- Sidebar --}}
+    <aside class="sidebar">
+        <div class="filter-section">
+            <div class="filter-section-title">Categorías</div>
+            @foreach(['Electrónica' => 412, 'Ropa' => 318, 'Hogar' => 204, 'Libros' => 96, 'Deportes' => 140, 'Juguetes' => 78] as $cat => $n)
+            <label class="filter-item">
+                <input type="checkbox"> {{ $cat }}
+                <span class="filter-count">{{ $n }}</span>
+            </label>
+            @endforeach
         </div>
-        <div class="hero-icon">🛍️</div>
-    </div>
 
-    {{-- Toolbar --}}
-    <div class="products-toolbar">
-        <h1>Resultados <span style="font-size:14px;color:#666;">1–20 de más de 1,200 resultados</span></h1>
-        <div class="toolbar-right">
-            <span class="sort-label">Ordenar por:</span>
-            <select class="sort-select">
-                <option>Relevancia</option>
-                <option>Precio: menor a mayor</option>
-                <option>Precio: mayor a menor</option>
-                <option>Más valorados</option>
-                <option>Más recientes</option>
-            </select>
-            <a href="/product/create" class="btn-add">+ Agregar Producto</a>
-        </div>
-    </div>
-
-    {{-- Layout principal --}}
-    <div class="products-layout">
-
-        {{-- Sidebar --}}
-        <aside class="sidebar">
-            <div class="filter-card">
-                <h3>Categorías</h3>
-                @foreach(['Electrónica','Ropa','Hogar','Libros','Deportes','Juguetes'] as $cat)
+        <div class="filter-section">
+            <div class="filter-section-title">Precio</div>
+            <div class="price-inputs">
+                <input class="price-input" type="text" placeholder="Min">
+                <span class="price-dash">—</span>
+                <input class="price-input" type="text" placeholder="Max">
+            </div>
+            <div style="margin-top:14px">
+                @foreach(['Menos de $25','$25 – $50','$50 – $100','$100 – $200','Más de $200'] as $rango)
                 <label class="filter-item">
-                    <input type="checkbox"> {{ $cat }}
+                    <input type="radio" name="price"> {{ $rango }}
                 </label>
                 @endforeach
             </div>
-
-            <div class="filter-card">
-                <h3>Precio</h3>
-                <div class="price-range">
-                    <input type="range" min="0" max="1000" value="500" id="price-slider">
-                    <div class="price-range-vals">
-                        <span>$0</span>
-                        <span>Hasta $500</span>
-                    </div>
-                </div>
-                <div style="margin-top:10px;">
-                    @foreach(['Menos de $25','$25 a $50','$50 a $100','$100 a $200','Más de $200'] as $rango)
-                    <label class="filter-item">
-                        <input type="radio" name="price"> {{ $rango }}
-                    </label>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="filter-card">
-                <h3>Valoración media</h3>
-                <div class="stars-filter">
-                    @for($s = 4; $s >= 1; $s--)
-                    <a href="#" class="star-row">
-                        <span class="stars">{{ str_repeat('★', $s) }}{{ str_repeat('☆', 5 - $s) }}</span>
-                        <span>y más</span>
-                    </a>
-                    @endfor
-                </div>
-            </div>
-
-            <div class="filter-card">
-                <h3>Envío</h3>
-                <label class="filter-item"><input type="checkbox"> Prime</label>
-                <label class="filter-item"><input type="checkbox"> Envío Gratis</label>
-                <label class="filter-item"><input type="checkbox"> Entrega mañana</label>
-            </div>
-        </aside>
-
-        {{-- Grid --}}
-        <div class="products-grid">
-            {{--
-                Cuando tengas datos reales, cambia este bloque por:
-                @forelse($products as $product)
-                    ... tu tarjeta ...
-                @empty
-                    <div class="empty-state">...</div>
-                @endforelse
-            --}}
-
-            @php
-            $demo = [
-                ['emoji'=>'💻','name'=>'Laptop UltraBook Pro 15" Intel Core i7, 16GB RAM, 512GB SSD','price'=>'2,499','old'=>'3,100','discount'=>'20%','stars'=>4,'votes'=>'3,842','prime'=>true,'badge'=>''],
-                ['emoji'=>'📱','name'=>'Smartphone Galaxy X12 128GB, Pantalla AMOLED 6.7"','price'=>'899','old'=>'1,200','discount'=>'25%','stars'=>5,'votes'=>'12,540','prime'=>true,'badge'=>'Oferta'],
-                ['emoji'=>'🎧','name'=>'Audífonos Bluetooth Noise Cancelling Premium Edition','price'=>'249','old'=>'399','discount'=>'38%','stars'=>4,'votes'=>'876','prime'=>true,'badge'=>''],
-                ['emoji'=>'⌚','name'=>'Reloj Inteligente Deportivo con GPS y Monitor de Salud','price'=>'349','old'=>null,'discount'=>null,'stars'=>4,'votes'=>'2,210','prime'=>false,'badge'=>'Nuevo'],
-                ['emoji'=>'🖥️','name'=>'Monitor 4K 27" HDR 144Hz para Diseño y Gaming','price'=>'1,099','old'=>'1,399','discount'=>'21%','stars'=>5,'votes'=>'654','prime'=>true,'badge'=>''],
-                ['emoji'=>'⌨️','name'=>'Teclado Mecánico Retroiluminado RGB Switches Blue','price'=>'189','old'=>'240','discount'=>'21%','stars'=>4,'votes'=>'4,321','prime'=>true,'badge'=>''],
-                ['emoji'=>'📷','name'=>'Cámara Digital Mirrorless 24MP 4K Video con Lente 18-55mm','price'=>'3,200','old'=>'3,800','discount'=>'16%','stars'=>5,'votes'=>'198','prime'=>false,'badge'=>''],
-                ['emoji'=>'🔊','name'=>'Bocina Bluetooth Portátil Waterproof 360° Sonido Envolvente','price'=>'159','old'=>null,'discount'=>null,'stars'=>4,'votes'=>'7,801','prime'=>true,'badge'=>'Nuevo'],
-            ];
-            @endphp
-
-            @foreach($demo as $p)
-            <div class="product-card" onclick="window.location='/product/{{ $loop->index + 1 }}'">
-                @if($p['badge'])
-                    <div class="product-badge {{ $p['badge'] === 'Nuevo' ? 'badge-new' : '' }}">{{ $p['badge'] }}</div>
-                @endif
-
-                <div class="product-img-wrap">
-                    <div class="product-img-placeholder">{{ $p['emoji'] }}</div>
-                </div>
-
-                <div class="product-title">{{ $p['name'] }}</div>
-
-                <div class="product-stars">
-                    <span class="stars">{{ str_repeat('★', $p['stars']) }}{{ str_repeat('☆', 5 - $p['stars']) }}</span>
-                    <span class="rating-count">({{ $p['votes'] }})</span>
-                </div>
-
-                @if($p['prime'])
-                <div class="product-prime">
-                    <span style="background:#007eb9;color:#fff;padding:0 4px;border-radius:2px;font-size:10px;">prime</span>
-                    Envío GRATIS mañana
-                </div>
-                @endif
-
-                <div class="product-price-block">
-                    @if($p['old'])
-                    <div class="product-price-old">Precio sin descuento: <strong>${{ $p['old'] }}</strong></div>
-                    @endif
-                    <div class="product-price"><sup>$</sup>{{ $p['price'] }}</div>
-                    @if($p['discount'])
-                    <div class="product-price-discount">Ahorra {{ $p['discount'] }}</div>
-                    @endif
-                </div>
-
-                <button class="btn-cart" onclick="event.stopPropagation()">Añadir al Carrito</button>
-            </div>
-            @endforeach
         </div>
-    </div>
 
-    {{-- Paginación --}}
-    <div class="pagination-wrap">
-        <a href="#" class="page-btn">← Anterior</a>
-        @for($i = 1; $i <= 7; $i++)
-            <a href="#" class="page-btn {{ $i === 1 ? 'active' : '' }}">{{ $i }}</a>
-        @endfor
-        <a href="#" class="page-btn">Siguiente →</a>
+        <div class="filter-section">
+            <div class="filter-section-title">Valoración</div>
+            <div class="stars-filter">
+                @for($s = 4; $s >= 1; $s--)
+                <a href="#" class="star-row">
+                    <span class="stars">{{ str_repeat('★', $s) }}{{ str_repeat('☆', 5 - $s) }}</span>
+                    <span style="font-size:12px;color:var(--ink-muted)">y más</span>
+                </a>
+                @endfor
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">Envío</div>
+            <label class="filter-item"><input type="checkbox"> Prime</label>
+            <label class="filter-item"><input type="checkbox"> Envío gratis</label>
+            <label class="filter-item"><input type="checkbox"> Entrega mañana</label>
+        </div>
+    </aside>
+
+    {{-- Grid --}}
+    <div class="products-grid">
+        @forelse($misProductos as $p)
+        <div class="product-card" onclick="window.location='/tienda/{{ $p['id'] }}'">
+
+            {{-- Badge de estado --}}
+            <div class="product-badge {{ $p['state'] == 'Disponible' ? 'badge-new' : 'badge-out' }}">
+                {{ $p['state'] }}
+            </div>
+
+            {{-- Imagen --}}
+            <div class="product-img-wrap">
+                <a href="/tienda/{{ $p['id'] }}" onclick="event.stopPropagation()">
+                    <img src="{{ $p['img'] }}" alt="{{ $p['nombre'] }}"
+                         style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:12px;">
+                </a>
+            </div>
+
+            {{-- ID --}}
+            <p style="font-size:11px;color:var(--ink-muted);margin-bottom:4px">ID: #{{ $p['id'] }}</p>
+
+            {{-- Título --}}
+            <a href="/tienda/{{ $p['id'] }}" onclick="event.stopPropagation()" style="text-decoration:none">
+                <div class="product-title">{{ $p['nombre'] }}</div>
+            </a>
+
+            {{-- Descripción truncada --}}
+            <p style="font-size:12px;color:var(--ink-muted);margin-bottom:10px;line-height:1.5">
+                {{ Str::limit($p['description'], 80) }}
+            </p>
+
+            {{-- Precio --}}
+            <div class="product-price-block">
+                <div class="product-price">
+                    <sup>$</sup>{{ number_format($p['price'], 2) }}
+                </div>
+            </div>
+
+            {{-- Envío gratis --}}
+            <p style="font-size:12px;color:#3ddc84;margin-bottom:12px;font-weight:600">
+                ✓ Envío gratis a Bucaramanga
+            </p>
+
+            <button class="btn-cart" onclick="event.stopPropagation()">Añadir al carrito</button>
+        </div>
+
+        @empty
+        <div class="empty-state">
+            <h3>No hay productos disponibles</h3>
+            <p>Aún no se han agregado productos. ¡Sé el primero en publicar!</p>
+            <a href="/product/create" class="btn-add-product">+ Agregar producto</a>
+        </div>
+        @endforelse
     </div>
+</div>
+
+{{-- Pagination --}}
+<div class="pagination-wrap">
+    <a href="#" class="page-btn nav">← Anterior</a>
+    @for($i = 1; $i <= 7; $i++)
+        <a href="#" class="page-btn {{ $i === 1 ? 'active' : '' }}">{{ $i }}</a>
+    @endfor
+    <a href="#" class="page-btn nav">Siguiente →</a>
+</div>
 
 @endsection

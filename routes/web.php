@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 // HOME
 
+
 Route::get('/', HomeController::class);
 
 
