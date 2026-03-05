@@ -473,8 +473,8 @@
             {{-- Imagen --}}
             <div class="product-img-wrap">
                 <a href="/tienda/{{ $p['id'] }}" onclick="event.stopPropagation()">
-                    <img src="{{ $p['img'] }}" alt="{{ $p['nombre'] }}"
-                         style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:12px;">
+                    <img src="{{ asset('storage/' . $p->image) }}" alt="{{ $p->name }}"
+     style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:12px;">
                 </a>
             </div>
 

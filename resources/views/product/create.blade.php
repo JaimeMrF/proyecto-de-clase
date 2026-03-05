@@ -365,7 +365,7 @@
 <div class="breadcrumb">
     <a href="/">Inicio</a>
     <span>/</span>
-    <a href="/product">Productos</a>
+    <a href="{{ route('product.index') }}">Productos</a>
     <span>/</span>
     <strong>Nuevo producto</strong>
 </div>
@@ -380,7 +380,7 @@
 
     {{-- ══ FORMULARIO ══ --}}
     <div>
-        <form action="{{route('product.store')}}" method="POST" enctype="multipart/form-data" id="product-form">
+        <form action="{{ route('product.store')}}" method="POST" enctype="multipart/form-data" id="product-form">
             @csrf
 
             {{-- 1 · Nombre --}}
@@ -476,7 +476,7 @@
                 </div>
                 <div class="f-card-body">
                     <div class="upload-zone" id="drop-zone">
-                        <input type="file" name="img" id="img-input"
+                        <input type="file" name="imagen" id="img-input"
                                accept="image/*" onchange="handleImg(this)">
                         <div class="upload-ico">🖼️</div>
                         <div class="upload-title">Arrastra tu imagen aquí o haz clic</div>
@@ -503,7 +503,7 @@
                 <button type="submit" class="btn-draft" name="estado" value="borrador">
                     💾 Guardar borrador
                 </button>
-                <a href="/product" class="btn-cancel">✕ Cancelar</a>
+                <a href="{{ route('product.index') }}" class="btn-cancel">✕ Cancelar</a>
             </div>
 
         </form>

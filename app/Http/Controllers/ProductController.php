@@ -25,11 +25,17 @@ class ProductController extends Controller
 
     public function store(Request $request){
 
+       
         $new_product = new Product();
         $new_product->name = $request->get('nombre');
         $new_product->description = $request->get('descripcion');
         $new_product->price = $request->get('precio');
         $new_product->category_id = $request->get('categoria');
+
+        if ($request->hasFile('imagen')){
+            $ruta = $request->file('imagen')->store('images','public');
+            $new_product->image = $ruta;
+        }
 
         $new_product->save();
 
