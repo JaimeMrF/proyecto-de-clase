@@ -1,945 +1,635 @@
 @extends('layouts.app')
 
-@section('title', 'Agregar Producto — MiTienda')
+@section('title', 'Nuevo Producto — MiTienda')
 
 @push('styles')
 <style>
-    .create-layout {
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+    :root {
+        --bg:        #0d0d14;
+        --surface:   #13131c;
+        --surface2:  #1a1a26;
+        --surface3:  #212130;
+        --border:    rgba(255,255,255,0.07);
+        --border-hi: rgba(255,255,255,0.14);
+        --accent:    #ff6b35;
+        --accent-lo: rgba(255,107,53,0.10);
+        --accent-md: rgba(255,107,53,0.22);
+        --green:     #3ddc84;
+        --red:       #ff4d6a;
+        --text:      #eeeef5;
+        --muted:     #7878a0;
+        --dim:       #44445c;
+        --r:         10px;
+        --r-sm:      7px;
+    }
+
+    .create-wrap {
         display: grid;
-        grid-template-columns: 1fr 300px;
+        grid-template-columns: 1fr 288px;
         gap: 24px;
         align-items: flex-start;
     }
 
-    /* ── Page header ── */
-    .page-header { margin-bottom: 28px; }
-    .page-header .section-label {
+    /* Page header */
+    .pg-header { margin-bottom: 28px; }
+    .pg-eyebrow {
         font-family: 'Sora', sans-serif;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        color: var(--accent);
-        margin-bottom: 8px;
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 1.8px; text-transform: uppercase;
+        color: var(--accent); margin-bottom: 8px;
     }
-    .page-header h1 {
+    .pg-header h1 {
         font-family: 'Sora', sans-serif;
-        font-size: 28px;
-        font-weight: 800;
-        color: var(--text);
-        margin-bottom: 6px;
-        line-height: 1.1;
+        font-size: 30px; font-weight: 800;
+        color: var(--text); line-height: 1.1;
+        margin-bottom: 6px; letter-spacing: -0.5px;
     }
-    .page-header p { font-size: 14px; color: var(--text-muted); }
+    .pg-header p { font-size: 14px; color: var(--muted); }
 
-    /* ── Form card ── */
-    .form-card {
+    /* Cards */
+    .f-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
+        border-radius: var(--r);
+        margin-bottom: 14px;
         overflow: hidden;
-        margin-bottom: 16px;
         transition: border-color .2s;
     }
-    .form-card:hover { border-color: var(--border-hover); }
-
-    .form-card-header {
-        padding: 18px 24px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid var(--border);
+    .f-card:focus-within { border-color: var(--border-hi); }
+    .f-card-head {
+        display: flex; align-items: center; gap: 12px;
+        padding: 16px 22px;
         background: var(--surface2);
+        border-bottom: 1px solid var(--border);
     }
-    .card-icon {
-        width: 36px;
-        height: 36px;
-        background: var(--accent-soft);
-        border: 1px solid rgba(255,107,53,0.2);
-        border-radius: var(--radius-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
+    .f-num {
+        width: 26px; height: 26px; border-radius: 50%;
+        background: var(--accent-lo);
+        border: 1px solid var(--accent-md);
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Sora', sans-serif;
+        font-size: 11px; font-weight: 700; color: var(--accent);
         flex-shrink: 0;
     }
-    .form-card-header h2 {
+    .f-card-head h2 {
         font-family: 'Sora', sans-serif;
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--text);
+        font-size: 14px; font-weight: 700; color: var(--text);
     }
-    .form-card-body { padding: 24px; }
+    .f-card-body { padding: 22px; }
 
-    /* ── Form elements ── */
-    .form-group {
-        margin-bottom: 18px;
-    }
-    .form-group:last-child { margin-bottom: 0; }
+    /* Fields */
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
 
     label {
         display: block;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-muted);
-        margin-bottom: 7px;
+        font-size: 11px; font-weight: 700;
+        color: var(--muted); margin-bottom: 7px;
+        letter-spacing: 0.8px; text-transform: uppercase;
     }
-    .required { color: var(--accent); margin-left: 2px; }
-    .optional { color: var(--text-dim); font-weight: 400; font-size: 12px; }
+    .req { color: var(--accent); margin-left: 1px; }
 
-    input[type="text"],
-    input[type="number"],
-    input[type="url"],
+    input[type=text],
+    input[type=number],
     textarea,
     select {
         width: 100%;
         background: var(--surface2);
         border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
+        border-radius: var(--r-sm);
         color: var(--text);
-        font-size: 14px;
         font-family: 'DM Sans', sans-serif;
-        padding: 10px 14px;
+        font-size: 14px;
+        padding: 11px 14px;
         outline: none;
-        transition: border-color .2s, box-shadow .2s;
-        -webkit-appearance: none;
+        transition: border-color .18s, box-shadow .18s;
+        -webkit-appearance: none; appearance: none;
     }
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    input[type="url"]:focus,
-    textarea:focus,
-    select:focus {
+    input[type=text]:focus, input[type=number]:focus,
+    textarea:focus, select:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(255,107,53,0.08);
+        box-shadow: 0 0 0 3px var(--accent-lo);
     }
-    input::placeholder,
-    textarea::placeholder { color: var(--text-dim); }
-    select option { background: var(--surface2); }
+    input::placeholder, textarea::placeholder { color: var(--dim); }
     textarea { resize: vertical; line-height: 1.6; }
+    select { cursor: pointer; }
+    select option { background: var(--surface2); color: var(--text); }
 
-    .char-counter {
-        text-align: right;
-        font-size: 11px;
-        color: var(--text-dim);
-        margin-top: 5px;
-    }
-    .field-hint {
-        font-size: 12px;
-        color: var(--text-dim);
-        margin-top: 6px;
-        line-height: 1.5;
+    .counter {
+        text-align: right; font-size: 11px;
+        color: var(--dim); margin-top: 5px;
     }
 
-    .form-row {
+    /* Precio */
+    .price-wrap { position: relative; }
+    .price-sym {
+        position: absolute; left: 14px; top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px; font-weight: 600;
+        color: var(--muted); pointer-events: none;
+    }
+    .price-wrap input { padding-left: 28px; }
+
+    /* Categorías como pills */
+    .cat-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
     }
-    .form-row-3 {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 16px;
-    }
-
-    /* Input prefix */
-    .input-prefix-wrap {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-    .input-prefix {
-        position: absolute;
-        left: 14px;
-        color: var(--text-muted);
-        font-size: 14px;
-        font-weight: 600;
-        pointer-events: none;
-        z-index: 1;
-    }
-    .input-prefix-wrap input { padding-left: 28px; }
-
-    /* ── Upload area ── */
-    .upload-area {
-        border: 2px dashed var(--border);
-        border-radius: var(--radius);
-        padding: 40px 24px;
-        text-align: center;
-        cursor: pointer;
-        position: relative;
-        transition: border-color .2s, background .2s;
-    }
-    .upload-area:hover {
-        border-color: var(--accent);
-        background: var(--accent-soft);
-    }
-    .upload-area input[type="file"] {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-        width: 100%;
-        height: 100%;
-    }
-    .upload-icon { font-size: 40px; margin-bottom: 12px; }
-    .upload-text { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-    .upload-subtext { font-size: 12px; color: var(--text-dim); }
-
-    .upload-preview {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 16px;
-    }
-    .preview-thumb {
-        width: 80px;
-        height: 80px;
-        border-radius: var(--radius-sm);
-        background-size: cover;
-        background-position: center;
-        border: 1px solid var(--border);
-    }
-
-    /* ── Variants ── */
-    .variant-row {
-        display: flex;
-        align-items: flex-end;
-        gap: 12px;
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 14px;
-        margin-bottom: 10px;
-    }
-    .btn-remove {
-        background: transparent;
-        border: 1px solid var(--border);
-        color: var(--text-dim);
-        width: 32px;
-        height: 32px;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
+    .cat-pill input[type=radio] { display: none; }
+    .cat-pill label {
+        display: flex; align-items: center;
         justify-content: center;
-        flex-shrink: 0;
-        transition: border-color .2s, color .2s, background .2s;
-        font-family: inherit;
-    }
-    .btn-remove:hover { border-color: var(--red); color: var(--red); background: rgba(255,77,106,0.08); }
-    .btn-add-variant {
-        background: transparent;
-        border: 1px dashed var(--border);
-        color: var(--text-muted);
-        padding: 10px 16px;
-        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px; font-weight: 500;
+        color: var(--muted);
         cursor: pointer;
-        font-size: 13px;
-        font-family: inherit;
-        transition: border-color .2s, color .2s;
-        width: 100%;
+        text-transform: none; letter-spacing: 0;
         text-align: center;
+        transition: border-color .15s, color .15s, background .15s;
+        margin: 0;
     }
-    .btn-add-variant:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── Tags ── */
-    .tags-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 7px;
-        padding: 10px 14px;
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        min-height: 46px;
-        cursor: text;
-        transition: border-color .2s, box-shadow .2s;
+    .cat-pill label:hover {
+        border-color: var(--border-hi); color: var(--text);
     }
-    .tags-container:focus-within {
+    .cat-pill input[type=radio]:checked + label {
+        background: var(--accent-lo);
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(255,107,53,0.08);
-    }
-    .tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: var(--accent-soft);
-        border: 1px solid rgba(255,107,53,0.3);
         color: var(--accent);
-        padding: 3px 10px;
-        border-radius: 50px;
-        font-size: 12px;
         font-weight: 600;
     }
-    .tag-remove { cursor: pointer; opacity: 0.7; font-size: 13px; }
-    .tag-remove:hover { opacity: 1; }
-    .tag-input-hidden {
-        background: transparent;
-        border: none;
-        outline: none;
-        color: var(--text);
-        font-size: 13px;
-        font-family: inherit;
-        min-width: 120px;
-        flex: 1;
-        padding: 0;
-        box-shadow: none;
-    }
 
-    /* ── Form actions ── */
-    .form-actions {
-        padding: 24px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
+    /* Upload */
+    .upload-zone {
+        border: 2px dashed var(--border);
+        border-radius: var(--r);
+        padding: 40px 20px;
+        text-align: center;
+        position: relative; cursor: pointer;
+        transition: border-color .18s, background .18s;
     }
-    .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--accent);
-        color: #fff;
-        border: none;
-        border-radius: 50px;
-        padding: 12px 28px;
-        font-size: 14px;
-        font-weight: 700;
-        cursor: pointer;
-        font-family: inherit;
-        transition: background .2s, transform .15s, box-shadow .2s;
-        box-shadow: 0 4px 16px rgba(255,107,53,0.3);
+    .upload-zone:hover, .upload-zone.drag-over {
+        border-color: var(--accent); background: var(--accent-lo);
     }
-    .btn-primary:hover {
-        background: #ff8055;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 24px rgba(255,107,53,0.4);
+    .upload-zone input[type=file] {
+        position: absolute; inset: 0;
+        opacity: 0; cursor: pointer;
+        width: 100%; height: 100%;
     }
-    .btn-secondary {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--surface2);
-        color: var(--text-muted);
+    .upload-ico {
+        width: 52px; height: 52px;
+        background: var(--surface3);
+        border: 1px solid var(--border-hi);
+        border-radius: var(--r);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px; margin: 0 auto 14px;
+    }
+    .upload-title {
+        font-size: 15px; font-weight: 600;
+        color: var(--text); margin-bottom: 5px;
+    }
+    .upload-sub { font-size: 12px; color: var(--muted); }
+
+    /* Preview */
+    .preview-wrap {
+        display: none; margin-top: 16px;
         border: 1px solid var(--border);
-        border-radius: 50px;
-        padding: 12px 24px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        font-family: inherit;
-        transition: border-color .2s, color .2s;
+        border-radius: var(--r); overflow: hidden;
+        background: var(--surface2);
     }
-    .btn-secondary:hover { border-color: var(--border-hover); color: var(--text); }
-    .btn-danger {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: var(--text-dim);
-        text-decoration: none;
-        font-size: 13px;
-        margin-left: auto;
-        transition: color .2s;
+    .preview-wrap.visible { display: block; }
+    .preview-img {
+        width: 100%; max-height: 260px;
+        object-fit: contain; display: block; padding: 12px;
     }
-    .btn-danger:hover { color: var(--red); }
+    .preview-name {
+        padding: 10px 14px; font-size: 12px; color: var(--muted);
+        border-top: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .preview-clear {
+        color: var(--red); font-size: 12px; cursor: pointer;
+        background: none; border: none;
+        font-family: inherit; padding: 0;
+    }
+    .preview-clear:hover { text-decoration: underline; }
 
-    /* ── Sidebar ── */
-    .create-sidebar {
-        position: sticky;
-        top: 90px;
-    }
-    .sidebar-card {
+    /* Actions */
+    .f-actions {
+        display: flex; align-items: center; gap: 10px;
+        padding: 18px 22px;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        padding: 20px;
-        margin-bottom: 14px;
+        border-radius: var(--r); flex-wrap: wrap;
     }
-    .sidebar-card h3 {
+    .btn-pub {
+        display: inline-flex; align-items: center; gap: 8px;
+        height: 40px; padding: 0 24px;
+        background: var(--accent); color: #fff;
+        border: none; border-radius: 50px;
         font-family: 'Sora', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border);
+        font-size: 13px; font-weight: 700; cursor: pointer;
+        box-shadow: 0 4px 18px rgba(255,107,53,.35);
+        transition: background .15s, transform .12s, box-shadow .15s;
     }
+    .btn-pub:hover {
+        background: #ff8055; transform: translateY(-1px);
+        box-shadow: 0 6px 24px rgba(255,107,53,.45);
+    }
+    .btn-draft {
+        display: inline-flex; align-items: center; gap: 6px;
+        height: 40px; padding: 0 18px;
+        background: var(--surface2); color: var(--muted);
+        border: 1px solid var(--border); border-radius: 50px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px; font-weight: 500; cursor: pointer;
+        transition: border-color .15s, color .15s;
+    }
+    .btn-draft:hover { border-color: var(--border-hi); color: var(--text); }
+    .btn-cancel {
+        margin-left: auto; font-size: 13px;
+        color: var(--dim); text-decoration: none;
+        transition: color .15s;
+    }
+    .btn-cancel:hover { color: var(--red); }
+
+    /* Sidebar */
+    .create-sidebar { position: sticky; top: 90px; }
+    .s-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        margin-bottom: 12px; overflow: hidden;
+    }
+    .s-head {
+        padding: 12px 18px; border-bottom: 1px solid var(--border);
+        font-family: 'Sora', sans-serif;
+        font-size: 11px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+    }
+    .s-body { padding: 18px; }
 
     /* Progress */
-    .progress-wrap { margin-bottom: 16px; }
-    .progress-label {
-        display: flex;
-        justify-content: space-between;
-        font-size: 12px;
-        margin-bottom: 8px;
+    .prog-label {
+        display: flex; justify-content: space-between;
+        font-size: 12px; color: var(--muted); margin-bottom: 8px;
     }
-    .progress-label span:first-child { color: var(--text-muted); }
-    .progress-label span:last-child { color: var(--accent); font-weight: 700; }
-    .progress-bar {
-        height: 6px;
-        background: var(--surface2);
-        border-radius: 3px;
-        overflow: hidden;
+    #prog-pct { font-weight: 700; color: var(--accent); }
+    .prog-track {
+        height: 5px; background: var(--surface3);
+        border-radius: 3px; overflow: hidden; margin-bottom: 16px;
     }
-    .progress-fill {
+    .prog-fill {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent), var(--accent2));
-        border-radius: 3px;
-        width: 0%;
-        transition: width .4s ease;
+        background: linear-gradient(90deg, var(--accent), #ffb347);
+        border-radius: 3px; width: 0%;
+        transition: width .35s ease;
     }
-    .checklist { list-style: none; }
-    .checklist li {
-        font-size: 13px;
-        color: var(--text-dim);
-        padding: 6px 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: color .2s;
+    .chklist { list-style: none; }
+    .chklist li {
+        display: flex; align-items: center; gap: 9px;
+        font-size: 13px; color: var(--dim);
+        padding: 5px 0; transition: color .2s;
     }
-    .checklist li::before {
-        content: '○';
-        font-size: 14px;
-        color: var(--text-dim);
-        flex-shrink: 0;
-        transition: content .2s, color .2s;
+    .chklist li::before {
+        content: ''; width: 16px; height: 16px;
+        border: 1.5px solid var(--dim); border-radius: 50%;
+        flex-shrink: 0; transition: all .2s;
     }
-    .checklist li.done { color: var(--green); }
-    .checklist li.done::before { content: '✓'; color: var(--green); }
+    .chklist li.done { color: var(--green); }
+    .chklist li.done::before {
+        background: var(--green); border-color: var(--green);
+        background-image: url("data:image/svg+xml,%3Csvg width='8' height='6' viewBox='0 0 8 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3l2 2 4-4' stroke='%230d0d14' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: center;
+    }
 
-    /* Toggles */
-    .toggle-wrap {
-        display: flex;
-        align-items: center;
+    /* Status rows */
+    .s-row {
+        display: flex; align-items: center;
         justify-content: space-between;
-        margin-bottom: 13px;
-        font-size: 13px;
-        color: var(--text-muted);
+        font-size: 13px; color: var(--muted);
+        padding: 8px 0; border-bottom: 1px solid var(--border);
     }
-    .toggle-wrap:last-child { margin-bottom: 0; }
-    .toggle { position: relative; display: inline-block; width: 38px; height: 22px; flex-shrink: 0; }
-    .toggle input { opacity: 0; width: 0; height: 0; }
-    .toggle-slider {
-        position: absolute;
-        inset: 0;
-        background: var(--surface3);
-        border-radius: 11px;
-        cursor: pointer;
-        transition: background .2s;
-        border: 1px solid var(--border);
+    .s-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .s-row:first-child { padding-top: 0; }
+    .s-pill {
+        font-size: 10px; font-weight: 700;
+        padding: 3px 9px; border-radius: 50px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        background: var(--surface3); border: 1px solid var(--border);
+        color: var(--dim);
     }
-    .toggle-slider::before {
-        content: '';
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        background: var(--text-dim);
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: transform .2s, background .2s;
-    }
-    .toggle input:checked + .toggle-slider { background: var(--accent-soft); border-color: rgba(255,107,53,0.4); }
-    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--accent); }
-
-    /* Status */
-    .publish-option {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-        font-size: 13px;
-        color: var(--text-muted);
-    }
-    .publish-option:last-child { margin-bottom: 0; }
-    .status-badge {
-        display: inline-block;
-        padding: 3px 10px;
-        border-radius: 50px;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .status-badge.draft {
-        background: rgba(122,122,150,0.15);
-        border: 1px solid var(--border);
-        color: var(--text-dim);
-    }
-    .status-badge.published {
-        background: rgba(61,220,132,0.12);
-        border: 1px solid rgba(61,220,132,0.3);
+    .s-pill.live {
+        background: rgba(61,220,132,.12);
+        border-color: rgba(61,220,132,.3);
         color: var(--green);
     }
 
     /* Tips */
-    .tip-box {
+    .s-tip {
+        padding: 14px 18px;
+        border-left: 2px solid var(--accent);
+        border-top: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-radius: 0 var(--r-sm) var(--r-sm) 0;
         background: var(--surface);
-        border: 1px solid var(--border);
-        border-left: 3px solid var(--accent);
-        border-radius: var(--radius);
-        padding: 16px;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
+        font-size: 12.5px; color: var(--muted); line-height: 1.6;
     }
-    .tip-box.tip-yellow { border-left-color: var(--accent2); }
-    .tip-box h4 {
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 7px;
-    }
-    .tip-box p { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-
-    /* Publish select */
-    .publish-option select {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        color: var(--text-muted);
-        font-size: 12px;
-        padding: 4px 8px;
-        width: auto;
-        font-family: inherit;
+    .s-tip strong {
+        color: var(--text); display: block;
+        margin-bottom: 4px; font-size: 12px;
     }
 
-    @media (max-width: 900px) {
-        .create-layout { grid-template-columns: 1fr; }
+    @media (max-width: 920px) {
+        .create-wrap { grid-template-columns: 1fr; }
         .create-sidebar { position: static; }
-        .form-row-3 { grid-template-columns: 1fr 1fr; }
     }
-    @media (max-width: 600px) {
-        .form-row { grid-template-columns: 1fr; }
-        .form-row-3 { grid-template-columns: 1fr; }
-        .form-actions { flex-direction: column; align-items: stretch; }
-        .btn-danger { margin-left: 0; justify-content: center; }
+    @media (max-width: 560px) {
+        .cat-grid { grid-template-columns: repeat(2, 1fr); }
+        .f-actions { flex-direction: column; align-items: stretch; }
+        .btn-cancel { margin-left: 0; text-align: center; }
     }
 </style>
 @endpush
 
 @section('content')
 
-    <div class="breadcrumb">
-        <a href="/">Inicio</a>
-        <span>›</span>
-        <a href="/product">Productos</a>
-        <span>›</span>
-        <strong>Nuevo Producto</strong>
+<div class="breadcrumb">
+    <a href="/">Inicio</a>
+    <span>/</span>
+    <a href="/product">Productos</a>
+    <span>/</span>
+    <strong>Nuevo producto</strong>
+</div>
+
+<div class="pg-header">
+    <div class="pg-eyebrow">✦ Vendedor</div>
+    <h1>Agregar producto</h1>
+    <p>Completa los campos para publicar tu producto en MiTienda.</p>
+</div>
+
+<div class="create-wrap">
+
+    {{-- ══ FORMULARIO ══ --}}
+    <div>
+        <form action="{{route('product.store')}}" method="POST" enctype="multipart/form-data" id="product-form">
+            @csrf
+
+            {{-- 1 · Nombre --}}
+            <div class="f-card">
+                <div class="f-card-head">
+                    <span class="f-num">1</span>
+                    <h2>Nombre del producto</h2>
+                </div>
+                <div class="f-card-body">
+                    <div class="field" style="margin-bottom:0">
+                        <label for="nombre">Nombre <span class="req">*</span></label>
+                        <input type="text" id="nombre" name="nombre" maxlength="200"
+                               placeholder='Ej: Laptop UltraBook Pro 15" Intel i7, 16GB RAM'
+                               oninput="cnt(this,'nc',200);prog()">
+                        <div class="counter"><span id="nc">0</span> / 200</div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- 2 · Categoría — viene de $categoryList del controlador --}}
+            <div class="f-card">
+                <div class="f-card-head">
+                    <span class="f-num">2</span>
+                    <h2>Categoría</h2>
+                </div>
+                <div class="f-card-body">
+                    @if($categoryList->isNotEmpty())
+                        <div class="cat-grid">
+                            @foreach($categoryList as $cat)
+                            <div class="cat-pill">
+                                <input type="radio"
+                                       name="categoria"
+                                       id="cat-{{ $cat->id }}"
+                                       value="{{ $cat->id }}"
+                                       onchange="prog()">
+                                <label for="cat-{{ $cat->id }}">
+                                    {{-- compatible con columnas: nombre, name o categoria --}}
+                                    {{ $cat->nombre ?? $cat->name ?? $cat->categoria ?? '—' }}
+                                </label>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p style="font-size:13px;color:var(--muted)">
+                            No hay categorías registradas aún.
+                        </p>
+                    @endif
+                </div>
+            </div>
+
+            {{-- 3 · Descripción --}}
+            <div class="f-card">
+                <div class="f-card-head">
+                    <span class="f-num">3</span>
+                    <h2>Descripción</h2>
+                </div>
+                <div class="f-card-body">
+                    <div class="field" style="margin-bottom:0">
+                        <label for="descripcion">Descripción <span class="req">*</span></label>
+                        <textarea id="descripcion" name="descripcion"
+                                  rows="5" maxlength="5000"
+                                  placeholder="Describe materiales, características, usos, dimensiones…"
+                                  oninput="cnt(this,'dc',5000);prog()"></textarea>
+                        <div class="counter"><span id="dc">0</span> / 5,000</div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- 4 · Precio --}}
+            <div class="f-card">
+                <div class="f-card-head">
+                    <span class="f-num">4</span>
+                    <h2>Precio</h2>
+                </div>
+                <div class="f-card-body">
+                    <div class="field" style="margin-bottom:0">
+                        <label for="precio">Precio <span class="req">*</span></label>
+                        <div class="price-wrap">
+                            <span class="price-sym">$</span>
+                            <input type="number" id="precio" name="precio"
+                                   min="0" step="0.01" placeholder="0.00"
+                                   oninput="prog()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- 5 · Imagen --}}
+            <div class="f-card">
+                <div class="f-card-head">
+                    <span class="f-num">5</span>
+                    <h2>Imagen del producto</h2>
+                </div>
+                <div class="f-card-body">
+                    <div class="upload-zone" id="drop-zone">
+                        <input type="file" name="img" id="img-input"
+                               accept="image/*" onchange="handleImg(this)">
+                        <div class="upload-ico">🖼️</div>
+                        <div class="upload-title">Arrastra tu imagen aquí o haz clic</div>
+                        <div class="upload-sub">PNG · JPG · WEBP &nbsp;·&nbsp; hasta 10 MB &nbsp;·&nbsp; mín. 500 × 500 px</div>
+                    </div>
+
+                    <div class="preview-wrap" id="preview-wrap">
+                        <img id="preview-img" class="preview-img" src="" alt="Vista previa">
+                        <div class="preview-name">
+                            <span id="preview-fname"></span>
+                            <button type="button" class="preview-clear" onclick="clearImg()">
+                                ✕ Quitar imagen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Acciones --}}
+            <div class="f-actions">
+                <button type="submit" class="btn-pub" name="estado" value="publicado">
+                    🚀 Publicar producto
+                </button>
+                <button type="submit" class="btn-draft" name="estado" value="borrador">
+                    💾 Guardar borrador
+                </button>
+                <a href="/product" class="btn-cancel">✕ Cancelar</a>
+            </div>
+
+        </form>
     </div>
 
-    <div class="page-header">
-        <div class="section-label">✦ Vendedor</div>
-        <h1>Agregar Nuevo Producto</h1>
-        <p>Completa la información para publicar tu producto en MiTienda.</p>
-    </div>
+    {{-- ══ SIDEBAR ══ --}}
+    <aside class="create-sidebar">
 
-    <div class="create-layout">
-
-        {{-- ═══ MAIN FORM ═══ --}}
-        <div class="create-main">
-            <form action="/product" method="POST" enctype="multipart/form-data" id="product-form">
-                @csrf
-
-                {{-- Información Básica --}}
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <div class="card-icon">📦</div>
-                        <h2>Información Básica</h2>
-                    </div>
-                    <div class="form-card-body">
-                        <div class="form-group">
-                            <label for="nombre">Nombre del Producto <span class="required">*</span></label>
-                            <input type="text" id="nombre" name="nombre" maxlength="200"
-                                   placeholder='Ej: Laptop UltraBook Pro 15" Intel Core i7, 16GB RAM'
-                                   oninput="updateCharCount(this,'nombre-count',200); updateProgress()">
-                            <div class="char-counter"><span id="nombre-count">0</span> / 200</div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group" style="margin-bottom:0">
-                                <label for="categoria">Categoría <span class="required">*</span></label>
-                                <select id="categoria" name="categoria" onchange="updateProgress()">
-                                    <option value="">Seleccionar categoría...</option>
-                                    <optgroup label="Electrónica">
-                                        <option>Laptops y Computadoras</option>
-                                        <option>Smartphones</option>
-                                        <option>Audio y Sonido</option>
-                                        <option>Cámaras</option>
-                                    </optgroup>
-                                    <optgroup label="Ropa y Moda">
-                                        <option>Ropa Hombre</option>
-                                        <option>Ropa Mujer</option>
-                                        <option>Calzado</option>
-                                    </optgroup>
-                                    <optgroup label="Hogar">
-                                        <option>Muebles</option>
-                                        <option>Cocina</option>
-                                        <option>Decoración</option>
-                                    </optgroup>
-                                    <optgroup label="Deportes">
-                                        <option>Fitness</option>
-                                        <option>Ciclismo</option>
-                                        <option>Outdoor</option>
-                                    </optgroup>
-                                </select>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0">
-                                <label for="marca">Marca <span class="optional">(opcional)</span></label>
-                                <input type="text" id="marca" name="marca" placeholder="Ej: Samsung, Nike, Apple...">
-                            </div>
-                        </div>
-                    </div>
+        <div class="s-card">
+            <div class="s-head">Progreso</div>
+            <div class="s-body">
+                <div class="prog-label">
+                    <span>Completado</span>
+                    <span id="prog-pct">0%</span>
                 </div>
-
-                {{-- Descripción --}}
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <div class="card-icon">📝</div>
-                        <h2>Descripción y Características</h2>
-                    </div>
-                    <div class="form-card-body">
-                        <div class="form-group">
-                            <label for="descripcion">Descripción <span class="required">*</span></label>
-                            <textarea id="descripcion" name="descripcion" rows="5" maxlength="5000"
-                                      placeholder="Describe tu producto: características, materiales, usos..."
-                                      oninput="updateCharCount(this,'desc-count',5000); updateProgress()"></textarea>
-                            <div class="char-counter"><span id="desc-count">0</span> / 5,000</div>
-                        </div>
-                        <div class="form-group">
-                            <label>Características Destacadas <span class="optional">(una por línea)</span></label>
-                            <textarea name="caracteristicas" rows="4"
-                                      placeholder="• Procesador Intel Core i7&#10;• 16GB RAM DDR5&#10;• Pantalla Full HD 15.6&quot;&#10;• Batería 72Wh"></textarea>
-                            <div class="field-hint">Usa viñetas para que los compradores escaneen rápido las características clave.</div>
-                        </div>
-                    </div>
+                <div class="prog-track">
+                    <div class="prog-fill" id="prog-fill"></div>
                 </div>
-
-                {{-- Precio e Inventario --}}
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <div class="card-icon">💰</div>
-                        <h2>Precio e Inventario</h2>
-                    </div>
-                    <div class="form-card-body">
-                        <div class="form-row-3">
-                            <div class="form-group" style="margin-bottom:0">
-                                <label for="precio">Precio <span class="required">*</span></label>
-                                <div class="input-prefix-wrap">
-                                    <span class="input-prefix">$</span>
-                                    <input type="number" id="precio" name="precio" min="0" step="0.01" placeholder="0.00"
-                                           oninput="updateProgress()">
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0">
-                                <label for="precio_original">Precio Original <span class="optional">(sin dto.)</span></label>
-                                <div class="input-prefix-wrap">
-                                    <span class="input-prefix">$</span>
-                                    <input type="number" id="precio_original" name="precio_original" min="0" step="0.01" placeholder="0.00">
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0">
-                                <label for="stock">Stock <span class="required">*</span></label>
-                                <input type="number" id="stock" name="stock" min="0" placeholder="0"
-                                       oninput="updateProgress()">
-                            </div>
-                        </div>
-                        <div class="form-row" style="margin-top:16px">
-                            <div class="form-group" style="margin-bottom:0">
-                                <label for="sku">SKU / Código <span class="optional">(opcional)</span></label>
-                                <input type="text" id="sku" name="sku" placeholder="Ej: LAPTOP-001-X7">
-                            </div>
-                            <div class="form-group" style="margin-bottom:0">
-                                <label for="moneda">Moneda</label>
-                                <select id="moneda" name="moneda">
-                                    <option>COP — Peso Colombiano</option>
-                                    <option>USD — Dólar Americano</option>
-                                    <option>EUR — Euro</option>
-                                    <option>MXN — Peso Mexicano</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Imágenes --}}
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <div class="card-icon">🖼️</div>
-                        <h2>Imágenes del Producto</h2>
-                    </div>
-                    <div class="form-card-body">
-                        <div class="upload-area">
-                            <input type="file" name="imagenes[]" multiple accept="image/*" onchange="previewImages(this)">
-                            <div class="upload-icon">📸</div>
-                            <div class="upload-text">Arrastra imágenes o haz clic para seleccionar</div>
-                            <div class="upload-subtext">PNG, JPG, WEBP · máx. 10MB por imagen · mín. 500×500px</div>
-                        </div>
-                        <div class="upload-preview" id="image-preview"></div>
-                        <div class="field-hint" style="margin-top:12px">
-                            La primera imagen será la imagen principal. Puedes subir hasta 9.
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Variantes --}}
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <div class="card-icon">🎨</div>
-                        <h2>Variantes <span style="font-size:12px;font-weight:400;color:var(--text-dim)">(opcional)</span></h2>
-                    </div>
-                    <div class="form-card-body">
-                        <div id="variants-container">
-                            <div class="variant-row">
-                                <div style="flex:1">
-                                    <label style="font-size:12px;margin-bottom:6px">Tipo</label>
-                                    <select name="variante_tipo[]">
-                                        <option>Color</option>
-                                        <option>Talla</option>
-                                        <option>Capacidad</option>
-                                        <option>Material</option>
-                                    </select>
-                                </div>
-                                <div style="flex:2">
-                                    <label style="font-size:12px;margin-bottom:6px">Valores (separados por coma)</label>
-                                    <input type="text" name="variante_valores[]" placeholder="Rojo, Azul, Verde, Negro">
-                                </div>
-                                <div style="padding-top:22px">
-                                    <button type="button" class="btn-remove" onclick="removeVariant(this)">✕</button>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-add-variant" onclick="addVariant()">
-                            + Añadir variante
-                        </button>
-                    </div>
-                </div>
-
-                {{-- Envío y Adicionales --}}
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <div class="card-icon">🚚</div>
-                        <h2>Envío y Detalles Adicionales</h2>
-                    </div>
-                    <div class="form-card-body">
-                        <div class="form-row-3">
-                            <div class="form-group">
-                                <label for="peso">Peso <span class="optional">(kg)</span></label>
-                                <input type="number" id="peso" name="peso" min="0" step="0.01" placeholder="0.00">
-                            </div>
-                            <div class="form-group">
-                                <label for="largo">Largo <span class="optional">(cm)</span></label>
-                                <input type="number" id="largo" name="largo" min="0" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="ancho">Ancho <span class="optional">(cm)</span></label>
-                                <input type="number" id="ancho" name="ancho" min="0" placeholder="0">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Etiquetas / Tags <span class="optional">(Enter para añadir)</span></label>
-                            <div class="tags-container" id="tags-container" onclick="document.getElementById('tag-input').focus()">
-                                <input type="text" id="tag-input" class="tag-input-hidden"
-                                       placeholder="laptop, gaming, oferta..."
-                                       onkeydown="handleTagInput(event)">
-                            </div>
-                            <input type="hidden" name="tags" id="tags-hidden">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0">
-                            <label for="url_video">Video del Producto <span class="optional">(YouTube / Vimeo)</span></label>
-                            <input type="url" id="url_video" name="url_video" placeholder="https://youtube.com/watch?v=...">
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Acciones --}}
-                <div class="form-card">
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary" name="estado" value="publicado">
-                            🚀 Publicar Producto
-                        </button>
-                        <button type="submit" class="btn-secondary" name="estado" value="borrador">
-                            💾 Guardar Borrador
-                        </button>
-                        <a href="/product" class="btn-danger">✕ Cancelar</a>
-                    </div>
-                </div>
-
-            </form>
-        </div>
-
-        {{-- ═══ SIDEBAR ═══ --}}
-        <aside class="create-sidebar">
-
-            <div class="sidebar-card">
-                <h3>Progreso del Listado</h3>
-                <div class="progress-wrap">
-                    <div class="progress-label">
-                        <span>Completado</span>
-                        <span id="progress-pct">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                </div>
-                <ul class="checklist">
-                    <li id="chk-nombre">Nombre del producto</li>
-                    <li id="chk-categoria">Categoría seleccionada</li>
-                    <li id="chk-descripcion">Descripción añadida</li>
+                <ul class="chklist">
+                    <li id="chk-nombre">Nombre</li>
+                    <li id="chk-cat">Categoría seleccionada</li>
+                    <li id="chk-desc">Descripción</li>
                     <li id="chk-precio">Precio definido</li>
-                    <li id="chk-stock">Stock indicado</li>
+                    <li id="chk-img">Imagen subida</li>
                 </ul>
             </div>
+        </div>
 
-            <div class="sidebar-card">
-                <h3>Opciones de Publicación</h3>
-                <div class="toggle-wrap">
-                    <span>Destacado</span>
-                    <label class="toggle"><input type="checkbox" name="destacado"><span class="toggle-slider"></span></label>
-                </div>
-                <div class="toggle-wrap">
-                    <span>Envío Prime</span>
-                    <label class="toggle"><input type="checkbox" name="prime" checked><span class="toggle-slider"></span></label>
-                </div>
-                <div class="toggle-wrap">
-                    <span>Disponible en tienda</span>
-                    <label class="toggle"><input type="checkbox" name="tienda"><span class="toggle-slider"></span></label>
-                </div>
-                <div class="toggle-wrap">
-                    <span>Permitir reseñas</span>
-                    <label class="toggle"><input type="checkbox" name="resenas" checked><span class="toggle-slider"></span></label>
-                </div>
-            </div>
-
-            <div class="sidebar-card">
-                <h3>Estado de Publicación</h3>
-                <div class="publish-option">
-                    <span>Visibilidad</span>
-                    <select style="width:auto;padding:4px 8px;font-size:12px;">
-                        <option>Público</option>
-                        <option>Privado</option>
-                        <option>Solo con enlace</option>
-                    </select>
-                </div>
-                <div class="publish-option">
+        <div class="s-card">
+            <div class="s-head">Estado</div>
+            <div class="s-body">
+                <div class="s-row">
                     <span>Estado</span>
-                    <span class="status-badge draft" id="status-badge">Borrador</span>
+                    <span class="s-pill" id="s-pill">Borrador</span>
                 </div>
-                <div class="publish-option">
-                    <span>Publicar</span>
-                    <span style="font-size:12px;color:var(--text-dim)">Inmediatamente</span>
+                <div class="s-row">
+                    <span>Visibilidad</span>
+                    <span style="font-size:12px;color:var(--muted)">Público</span>
+                </div>
+                <div class="s-row">
+                    <span>Publicación</span>
+                    <span style="font-size:12px;color:var(--muted)">Inmediata</span>
                 </div>
             </div>
+        </div>
 
-            <div class="tip-box">
-                <h4>💡 Consejo Pro</h4>
-                <p>Productos con 5+ imágenes de alta calidad venden un 40% más. Usa fondo blanco para la imagen principal.</p>
-            </div>
+        <div class="s-tip">
+            <strong>💡 Imagen</strong>
+            Fondo blanco y mínimo 800 × 800 px. Las fotos de calidad aumentan las ventas un 40%.
+        </div>
 
-            <div class="tip-box tip-yellow">
-                <h4>🌟 Visibilidad</h4>
-                <p>Incluye palabras clave en el nombre y descripción para aparecer en más búsquedas.</p>
-            </div>
+        <div class="s-tip" style="border-left-color:#ffb347">
+            <strong>🔍 SEO interno</strong>
+            Incluye palabras clave en el nombre y los primeros 150 caracteres de la descripción.
+        </div>
 
-        </aside>
-    </div>
+    </aside>
+</div>
 
-    <script>
-        function updateCharCount(el, spanId, max) {
-            const span = document.getElementById(spanId);
-            span.textContent = el.value.length.toLocaleString();
-            span.style.color = el.value.length > max * .9 ? 'var(--red)' : '';
+<script>
+    /* Contador de caracteres */
+    function cnt(el, id, max) {
+        const s = document.getElementById(id);
+        s.textContent = el.value.length.toLocaleString();
+        s.style.color = el.value.length > max * .9 ? '#ff4d6a' : '';
+    }
+
+    /* Barra de progreso */
+    function prog() {
+        const catRadio   = document.querySelector('input[name="categoria"]:checked');
+        const catSelect  = document.getElementById('categoria');
+        const catOk      = catRadio !== null || (catSelect && catSelect.value !== '');
+
+        const checks = {
+            'chk-nombre': document.getElementById('nombre').value.trim().length > 0,
+            'chk-cat':    catOk,
+            'chk-desc':   document.getElementById('descripcion').value.trim().length > 20,
+            'chk-precio': parseFloat(document.getElementById('precio').value) > 0,
+            'chk-img':    document.getElementById('preview-wrap').classList.contains('visible'),
+        };
+
+        let done = 0;
+        for (const [id, ok] of Object.entries(checks)) {
+            document.getElementById(id).classList.toggle('done', ok);
+            if (ok) done++;
         }
+        const pct = Math.round(done / 5 * 100);
+        document.getElementById('prog-fill').style.width  = pct + '%';
+        document.getElementById('prog-pct').textContent   = pct + '%';
+    }
 
-        function updateProgress() {
-            const checks = {
-                'chk-nombre':      document.getElementById('nombre').value.trim().length > 0,
-                'chk-categoria':   document.getElementById('categoria').value !== '',
-                'chk-descripcion': document.getElementById('descripcion').value.trim().length > 30,
-                'chk-precio':      parseFloat(document.getElementById('precio').value) > 0,
-                'chk-stock':       document.getElementById('stock').value !== '',
-            };
-            let done = 0;
-            for (const [id, val] of Object.entries(checks)) {
-                const li = document.getElementById(id);
-                val ? li.classList.add('done') : li.classList.remove('done');
-                if (val) done++;
-            }
-            const pct = Math.round((done / Object.keys(checks).length) * 100);
-            document.getElementById('progress-fill').style.width = pct + '%';
-            document.getElementById('progress-pct').textContent = pct + '%';
-        }
+    /* Preview de imagen */
+    function handleImg(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('preview-img').src        = e.target.result;
+            document.getElementById('preview-fname').textContent = file.name;
+            document.getElementById('preview-wrap').classList.add('visible');
+            prog();
+        };
+        reader.readAsDataURL(file);
+    }
 
-        function previewImages(input) {
-            const preview = document.getElementById('image-preview');
-            preview.innerHTML = '';
-            Array.from(input.files).slice(0, 9).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const thumb = document.createElement('div');
-                    thumb.className = 'preview-thumb';
-                    thumb.style.backgroundImage = `url(${e.target.result})`;
-                    preview.appendChild(thumb);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
+    function clearImg() {
+        document.getElementById('img-input').value = '';
+        document.getElementById('preview-wrap').classList.remove('visible');
+        document.getElementById('preview-img').src = '';
+        prog();
+    }
 
-        function addVariant() {
-            const container = document.getElementById('variants-container');
-            const row = container.children[0].cloneNode(true);
-            row.querySelectorAll('input').forEach(i => i.value = '');
-            container.appendChild(row);
-        }
-        function removeVariant(btn) {
-            const container = document.getElementById('variants-container');
-            if (container.children.length > 1) btn.closest('.variant-row').remove();
-        }
+    /* Drag & drop visual */
+    const dz = document.getElementById('drop-zone');
+    dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', ()  => dz.classList.remove('drag-over'));
+    dz.addEventListener('drop',      e  => { e.preventDefault(); dz.classList.remove('drag-over'); });
 
-        const tags = [];
-        function handleTagInput(e) {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                const val = e.target.value.trim().replace(/,$/, '');
-                if (val && !tags.includes(val)) {
-                    tags.push(val);
-                    renderTag(val);
-                    e.target.value = '';
-                    document.getElementById('tags-hidden').value = tags.join(',');
-                }
-            }
-            if (e.key === 'Backspace' && e.target.value === '' && tags.length) {
-                const last = tags.pop();
-                document.querySelector(`.tag[data-val="${CSS.escape(last)}"]`)?.remove();
-                document.getElementById('tags-hidden').value = tags.join(',');
-            }
-        }
-        function renderTag(val) {
-            const container = document.getElementById('tags-container');
-            const el = document.createElement('span');
-            el.className = 'tag'; el.dataset.val = val;
-            el.innerHTML = `${val} <span class="tag-remove" onclick="removeTag('${val}')">×</span>`;
-            container.insertBefore(el, document.getElementById('tag-input'));
-        }
-        function removeTag(val) {
-            const i = tags.indexOf(val);
-            if (i > -1) tags.splice(i, 1);
-            document.querySelector(`.tag[data-val="${CSS.escape(val)}"]`)?.remove();
-            document.getElementById('tags-hidden').value = tags.join(',');
-        }
-
-        document.querySelectorAll('[name="estado"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const badge = document.getElementById('status-badge');
-                if (btn.value === 'publicado') {
-                    badge.textContent = 'Publicado';
-                    badge.classList.remove('draft');
-                    badge.classList.add('published');
-                } else {
-                    badge.textContent = 'Borrador';
-                    badge.classList.remove('published');
-                    badge.classList.add('draft');
-                }
-            });
+    /* Badge estado */
+    document.querySelectorAll('[name="estado"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const p = document.getElementById('s-pill');
+            if (btn.value === 'publicado') { p.textContent = 'Publicado'; p.classList.add('live'); }
+            else                           { p.textContent = 'Borrador';  p.classList.remove('live'); }
         });
-    </script>
+    });
+</script>
 
 @endsection
