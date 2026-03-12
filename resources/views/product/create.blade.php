@@ -348,6 +348,14 @@
         margin-bottom: 4px; font-size: 12px;
     }
 
+    /* Error messages */
+    .field-error {
+        color: var(--red);
+        font-size: 12px;
+        margin-top: 6px;
+        display: block;
+    }
+
     @media (max-width: 920px) {
         .create-wrap { grid-template-columns: 1fr; }
         .create-sidebar { position: static; }
@@ -380,7 +388,7 @@
 
     {{-- ══ FORMULARIO ══ --}}
     <div>
-        <form action="{{ route('product.store')}}" method="POST" enctype="multipart/form-data" id="product-form">
+        <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data" id="product-form">
             @csrf
 
             {{-- 1 · Nombre --}}
@@ -395,6 +403,9 @@
                         <input type="text" id="nombre" name="nombre" maxlength="200"
                                placeholder='Ej: Laptop UltraBook Pro 15" Intel i7, 16GB RAM'
                                oninput="cnt(this,'nc',200);prog()">
+                        @error('nombre')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
                         <div class="counter"><span id="nc">0</span> / 200</div>
                     </div>
                 </div>
@@ -410,19 +421,21 @@
                     @if($categoryList->isNotEmpty())
                         <div class="cat-grid">
                             @foreach($categoryList as $cat)
-                            <div class="cat-pill">
-                                <input type="radio"
-                                       name="categoria"
-                                       id="cat-{{ $cat->id }}"
-                                       value="{{ $cat->id }}"
-                                       onchange="prog()">
-                                <label for="cat-{{ $cat->id }}">
-                                    {{-- compatible con columnas: nombre, name o categoria --}}
-                                    {{ $cat->nombre ?? $cat->name ?? $cat->categoria ?? '—' }}
-                                </label>
-                            </div>
+                                <div class="cat-pill">
+                                    <input type="radio"
+                                           name="categoria"
+                                           id="cat-{{ $cat->id }}"
+                                           value="{{ $cat->id }}"
+                                           onchange="prog()">
+                                    <label for="cat-{{ $cat->id }}">
+                                        {{ $cat->nombre ?? $cat->name ?? $cat->categoria ?? '—' }}
+                                    </label>
+                                </div>
                             @endforeach
                         </div>
+                        @error('categoria')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
                     @else
                         <p style="font-size:13px;color:var(--muted)">
                             No hay categorías registradas aún.
@@ -444,6 +457,9 @@
                                   rows="5" maxlength="5000"
                                   placeholder="Describe materiales, características, usos, dimensiones…"
                                   oninput="cnt(this,'dc',5000);prog()"></textarea>
+                        @error('descripcion')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
                         <div class="counter"><span id="dc">0</span> / 5,000</div>
                     </div>
                 </div>
@@ -464,6 +480,9 @@
                                    min="0" step="0.01" placeholder="0.00"
                                    oninput="prog()">
                         </div>
+                        @error('precio')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -482,6 +501,9 @@
                         <div class="upload-title">Arrastra tu imagen aquí o haz clic</div>
                         <div class="upload-sub">PNG · JPG · WEBP &nbsp;·&nbsp; hasta 10 MB &nbsp;·&nbsp; mín. 500 × 500 px</div>
                     </div>
+                    @error('imagen')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
 
                     <div class="preview-wrap" id="preview-wrap">
                         <img id="preview-img" class="preview-img" src="" alt="Vista previa">
@@ -573,9 +595,9 @@
 
     /* Barra de progreso */
     function prog() {
-        const catRadio   = document.querySelector('input[name="categoria"]:checked');
-        const catSelect  = document.getElementById('categoria');
-        const catOk      = catRadio !== null || (catSelect && catSelect.value !== '');
+        const catRadio  = document.querySelector('input[name="categoria"]:checked');
+        const catSelect = document.getElementById('categoria');
+        const catOk     = catRadio !== null || (catSelect && catSelect.value !== '');
 
         const checks = {
             'chk-nombre': document.getElementById('nombre').value.trim().length > 0,
@@ -591,8 +613,8 @@
             if (ok) done++;
         }
         const pct = Math.round(done / 5 * 100);
-        document.getElementById('prog-fill').style.width  = pct + '%';
-        document.getElementById('prog-pct').textContent   = pct + '%';
+        document.getElementById('prog-fill').style.width = pct + '%';
+        document.getElementById('prog-pct').textContent  = pct + '%';
     }
 
     /* Preview de imagen */
@@ -601,7 +623,7 @@
         if (!file) return;
         const reader = new FileReader();
         reader.onload = e => {
-            document.getElementById('preview-img').src        = e.target.result;
+            document.getElementById('preview-img').src          = e.target.result;
             document.getElementById('preview-fname').textContent = file.name;
             document.getElementById('preview-wrap').classList.add('visible');
             prog();
