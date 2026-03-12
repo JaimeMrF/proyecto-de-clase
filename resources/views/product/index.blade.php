@@ -504,6 +504,13 @@
             </p>
 
             <button class="btn-cart" onclick="event.stopPropagation()">Añadir al carrito</button>
+
+            <form action="{{route('product.destroy', $p)}}" method="POST">
+                @method('delete')
+                @csrf
+                <button class="btn-cart" style="background: red">Eliminar</button>
+            </form>
+
         </div>
 
         @empty
