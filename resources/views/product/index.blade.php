@@ -463,7 +463,7 @@
     {{-- Grid --}}
     <div class="products-grid">
         @forelse($misProductos as $p)
-        <div class="product-card" onclick="window.location='/tienda/{{ $p['id'] }}'">
+        <div class="product-card" onclick="window.location='{{ route('product.show', $p->id) }}'">
 
             {{-- Badge de estado --}}
             <div class="product-badge {{ $p['state'] == 'Disponible' ? 'badge-new' : 'badge-out' }}">
@@ -472,7 +472,8 @@
 
             {{-- Imagen --}}
             <div class="product-img-wrap">
-                <a href="/tienda/{{ $p['id'] }}" onclick="event.stopPropagation()">
+                <a href="{{ route('product.show', $p->id) }}" onclick="event.stopPropagation()">
+
                     <img src="{{ asset('storage/' . $p->image) }}" alt="{{ $p->name }}"
      style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:12px;">
                 </a>
@@ -482,7 +483,8 @@
             <p style="font-size:11px;color:var(--ink-muted);margin-bottom:4px">ID: #{{ $p['id'] }}</p>
 
             {{-- Título --}}
-            <a href="/tienda/{{ $p['id'] }}" onclick="event.stopPropagation()" style="text-decoration:none">
+            <div class="product-title">{{ $p->name }}</div>  {{-- era $p['nombre'], debe ser $p->name --}}
+
                 <div class="product-title">{{ $p['nombre'] }}</div>
             </a>
 

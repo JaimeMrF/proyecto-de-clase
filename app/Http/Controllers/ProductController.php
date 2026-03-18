@@ -52,6 +52,7 @@ class ProductController extends Controller
 
     public function show($producto)
     {
+        $producto = Product::findOrFail($producto);
         return view('product.show', compact('producto'));
     }
 

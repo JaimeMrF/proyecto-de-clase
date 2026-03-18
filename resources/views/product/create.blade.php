@@ -388,6 +388,7 @@
 
     {{-- ══ FORMULARIO ══ --}}
     <div>
+
         <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data" id="product-form">
             @csrf
 
