@@ -398,14 +398,15 @@
                 <span style="color:var(--text-muted)">Devoluciones</span>
                 <span>y Pedidos</span>
             </a>
-            <a href="#" class="header-action cart">
+            <a href="{{ route('cart.index') }}" class="header-action cart">
                 <div class="cart-icon">
                     <svg width="28" height="26" viewBox="0 0 36 32" fill="none">
                         <path d="M2 2h4l3 15h18l3-10H8" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <circle cx="14" cy="28" r="2" fill="var(--text)"/>
                         <circle cx="26" cy="28" r="2" fill="var(--text)"/>
                     </svg>
-                    <span class="cart-count">0</span>
+                    <span class="cart-count">{{ array_sum(array_column(session()->get('cart', []), 'quantity')) }}</span>
+
                 </div>
                 <span style="font-weight:600">Carrito</span>
             </a>

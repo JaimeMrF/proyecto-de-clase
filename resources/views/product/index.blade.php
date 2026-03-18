@@ -505,7 +505,11 @@
                 ✓ Envío gratis a Bucaramanga
             </p>
 
-            <button class="btn-cart" onclick="event.stopPropagation()">Añadir al carrito</button>
+            <form action="{{ route('cart.add', $p->id) }}" method="POST" onclick="event.stopPropagation()">
+                @csrf
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn-cart">Añadir al carrito</button>
+            </form>
 
             <form action="{{route('product.destroy', $p)}}" method="POST">
                 @method('delete')

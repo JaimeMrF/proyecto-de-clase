@@ -225,7 +225,11 @@
         <div class="detail-desc">{{ $producto->description }}</div>
 
         <div class="detail-actions">
-            <button class="btn-cart-lg">Añadir al carrito</button>
+            <form action="{{ route('cart.add', $producto->id) }}" method="POST">
+                @csrf
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn-cart-lg">Añadir al carrito</button>
+            </form>
             <a href="{{ route('product.index') }}" class="btn-back">← Volver</a>
 
             <form action="{{ route('product.destroy', $producto) }}" method="POST">
