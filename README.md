@@ -71,9 +71,6 @@
 
 ## 🖼️ Foto de Perfil
 
-Puedes agregar tu foto así:
 
-```html
-<p align="center">
-  <img src="https://TU_LINK_DE_IMAGEN" width="200" style="border-radius:50%" />
-</p>
+<img width="493" height="500" alt="image" src="https://github.com/user-attachments/assets/60e99e12-14cb-4f73-9bfe-f5878e965dd0" />
+
