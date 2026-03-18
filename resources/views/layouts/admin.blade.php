@@ -231,6 +231,9 @@
             <span class="nav-link-icon">＋</span> Agregar producto
         </a>
 
+        <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+            <span class="nav-link-icon">◈</span> Categorías
+        </a>
         <div class="nav-section-label">Sistema</div>
         <a href="/" class="nav-link">
             <span class="nav-link-icon">↗</span> Ver tienda
